@@ -56,11 +56,16 @@ def make_dataframe(data_array, attribute_info_array):
             data_frame[abbr] = data_frame[abbr].astype(pd.CategoricalDtype(categories=nominal_values))
 
     # Rename attributes providing full description
+    # data_frame = rename_attributes(data_frame, attribute_info_array)
+
+    return data_frame
+
+# Rename attributes providing full description
+def rename_attributes(data_frame, attribute_info_array):
     attribute_labels = []
     for label in attribute_info_array:
         attribute_title = f'{label[0]} ({label[1]})'
         attribute_labels.append(attribute_title)
 
     data_frame.columns = attribute_labels
-
     return data_frame

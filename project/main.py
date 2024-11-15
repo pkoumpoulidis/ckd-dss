@@ -1,5 +1,5 @@
 import dataset_parser as parser
-
+import plots
 DATASET='../datasets/chronic_kidney_disease_full.arff'
 ATTR_LABELS='../datasets/attributes_labeling.csv'
 
@@ -9,3 +9,6 @@ data_array = parser.read_arff_data(DATASET)
 attribute_info_array = parser.read_labeling_data(ATTR_LABELS)
 # Make Data Frame
 data_frame = parser.make_dataframe(data_array, attribute_info_array)
+table = plots.get_table(data_frame)
+
+table.show()
