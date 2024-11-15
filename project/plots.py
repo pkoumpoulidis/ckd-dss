@@ -1,66 +1,39 @@
 import plotly.graph_objects as go
+import plotly.express as px
+from plotly.subplots import make_subplots
+from dash import Dash, html, dcc, callback, Output, Input
+
 
 def get_data_table(data_frame):
-    table = go.Figure(data=[go.Table(
-        header=dict(values=list(data_frame.columns),
-                    fill_color='#222222',  font=dict(color='white', size=12),
-                    align='center'),
-
-        cells=dict(values=[data_frame[col] for col in data_frame.columns],
-                   fill_color=['#444444', '#333333', '#444444', '#333333', '#444444','#333333',
-                               '#444444', '#333333', '#444444', '#333333', '#444444','#333333',
-                               '#444444', '#333333', '#444444', '#333333', '#444444','#333333',
-                               '#444444', '#333333', '#444444', '#333333', '#444444','#333333', '#444444'],
-                   font=dict(color='white', size=11),
-                   align='center')
-    )])
-
-    map_color = {"ckd":"green", "nockd":"red", "BORDERLINE":"blue"}
-
-    data_frame["class"] = data_frame["class"].map(map_color)
-
-    cols_to_show = ["name", "value", "output"]
-
-
-    return table
-
-
-def get_table(df):
-    cell_colors = []
-    for value in df['class']:
-        if value == 'ckd':
-            cell_colors.append('green')
-        else:
-            cell_colors.append('red')
-
+    # Create a Plotly table
     fig = go.Figure(data=[go.Table(
-        header=dict(
-            values=df.columns,
-            fill_color='gray',  # Dark header background
-            font=dict(color='white'),
-            align='center'
-        ),
-        cells=dict(
-            values=[df[col] for col in df.columns],
-            fill_color=[['#333333'], ['#222222'], ['#333333'], ['#222222'],
-                        ['#333333'], ['#222222'], ['#333333'], ['#222222'],
-                        ['#333333'], ['#222222'], ['#333333'], ['#222222'],
-                        ['#333333'], ['#222222'], ['#333333'], ['#222222'],
-                        ['#333333'], ['#222222'], ['#333333'], ['#222222'],
-                        ['#333333'], ['#222222'], ['#333333'], ['#222222'],cell_colors],  # Dark-themed cells with color based on class
-            font=dict(color='white'),  # White text for contrast
-            align='center'
-        )
+        header=dict(values=data_frame.columns),  # Header from DataFrame columns
+        cells=dict(values=[data_frame[col] for col in data_frame.columns])  # Data from DataFrame
     )])
-
-    # Update layout for a dark background
-    fig.update_layout(
-        plot_bgcolor='black',  # Dark background
-        paper_bgcolor='black',  # Dark paper background
-        title='Classified Data Table',
-        title_font=dict(color='white'),
-        font=dict(color='white')
-    )
 
     # Show the table
     return fig
+
+def get_attribute_histogram(data_frame, attribute_to_display):
+    fig = px.histogram(data_frame, x= attribute_to_display)
+    return fig
+
+def get_dataset_histogram(data_frame):
+
+    figures = []
+    for attribute in data_frame.columns:
+        figure = get_attribute_histogram(data_frame, attribute)
+        figure.show()
+        figures.append(figure)
+
+    cols = 4
+    rows = len(figures)// cols
+
+    fig = make_subplots(
+        rows=rows, cols=cols,
+        subplot_titles= data_frame.columns,
+        shared_xaxes=True,  # Optionally share x-axis for consistency
+        shared_yaxes=True   # Optionally share y-axis for consistency
+    )
+
+    fig.show()

@@ -53,7 +53,8 @@ def make_dataframe(data_array, attribute_info_array):
         # Parse categorical values
         else:
             nominal_values = label[3].split('/')
-            data_frame[abbr] = data_frame[abbr].astype(pd.CategoricalDtype(categories=nominal_values))
+            data_frame[abbr] = data_frame[abbr].astype(pd.CategoricalDtype(categories=nominal_values, ordered=True))
+
 
     # Rename attributes providing full description
     # data_frame = rename_attributes(data_frame, attribute_info_array)
